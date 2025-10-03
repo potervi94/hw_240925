@@ -17,7 +17,17 @@
 #  завантажити дані – завантажити кількості перемог
 # та програшів
 # Реалізуйте все функціями
+
 from typing import NoReturn
+from random import randint
+
+def generate_secret_number(low: int = 1, high: int = 100) -> int:
+    """
+    'Загадування числа': повертає випадкове число в діапазоні [low, high].
+    """
+    if low > high:
+        raise ValueError(f"Невірний діапазон: {low} має бути <= {high}")
+    return randint(low, high)
 
 
 def start_new_game() -> None:
