@@ -17,3 +17,68 @@
 #  завантажити дані – завантажити кількості перемог
 # та програшів
 # Реалізуйте все функціями
+from typing import NoReturn
+
+
+def start_new_game() -> None:
+    """Почати нову гру: користувач вводить числа до правильної відповіді."""
+    pass
+
+
+def show_results() -> None:
+    """Вивести результат: кількість перемог та програшів."""
+    pass
+
+
+def save_stats_to_file() -> None:
+    """Зберегти дані: кількості перемог та програшів у файл."""
+    pass
+
+
+def load_stats_from_file() -> None:
+    """Завантажити дані: кількості перемог та програшів з файлу."""
+    pass
+
+
+def print_menu() -> None:
+    """Вивести текстове меню."""
+    print("\nМеню:")
+    print("1) Почати нову гру")
+    print("2) Вивести результат")
+    print("3) Зберегти дані у файл")
+    print("4) Завантажити дані з файлу")
+    print("0) Вихід")
+
+
+def handle_choice(choice: str) -> bool:
+    """
+    Обробити вибір користувача.
+    Повертає True, якщо слід продовжити роботу меню; False — для виходу.
+    """
+    if choice == "1":
+        start_new_game()
+    elif choice == "2":
+        show_results()
+    elif choice == "3":
+        save_stats_to_file()
+    elif choice == "4":
+        load_stats_from_file()
+    elif choice == "0":
+        return False
+    else:
+        print("Невірний вибір. Спробуйте ще раз.")
+    return True
+
+
+def main() -> NoReturn:
+    """Головний цикл меню."""
+    while True:
+        print_menu()
+        user_input = input("Ваш вибір: ").strip()
+        if not handle_choice(user_input):
+            print("Вихід із програми.")
+            raise SystemExit(0)
+
+
+if __name__ == "__main__":
+    main()
