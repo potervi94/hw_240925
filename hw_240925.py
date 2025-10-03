@@ -17,9 +17,14 @@
 #  завантажити дані – завантажити кількості перемог
 # та програшів
 # Реалізуйте все функціями
-
-import random
+from random import randint
+import json
 from typing import NoReturn
+
+
+STATS_FILE = "stats.json"
+_stats: dict[str, int] = {"wins": 0, "losses": 0}
+
 
 def generate_secret_number(low: int = 1, high: int = 100) -> int:
     """
@@ -38,7 +43,7 @@ def start_new_game(tries: int = 5) -> None:
     while attempts_left > 0:
         print(f"Залишилось спроб: {attempts_left}")
         raw = input("Вгадайте число (1..100): ").strip()
-        if not raw.isdigit():
+        if not raw.lstrip("-").isdigit():
             print("Введіть ціле число.")
             continue
 
@@ -49,27 +54,50 @@ def start_new_game(tries: int = 5) -> None:
             print("Загадане число менше.")
         else:
             print("Вітаю! Ви вгадали число!")
+            _stats["wins"] = _stats.get("wins", 0) + 1
             break
 
         attempts_left -= 1
     else:
-        # Блок else виконається, якщо цикл не був перерваний break (спроби закінчились)
+        # Відпрацьовує, якщо не було break (користувач не вгадав)
         print(f"Спроби вичерпано. Число було: {secret}")
+        _stats["losses"] = _stats.get("losses", 0) + 1
 
 
 def show_results() -> None:
     """Вивести результат: кількість перемог та програшів."""
-    pass
+    print(f"Перемоги: {_stats.get('wins', 0)}, Програші: {_stats.get('losses', 0)}")
 
 
-def save_stats_to_file() -> None:
-    """Зберегти дані: кількості перемог та програшів у файл."""
-    pass
+def save_stats_to_file(file_path: str | None = None) -> None:
+    """Зберегти дані: кількості перемог та програшів у файл (JSON)."""
+    path = file_path or STATS_FILE
+    try:
+        with open(path, "w", encoding="utf-8") as f:
+            json.dump(_stats, f, ensure_ascii=False, indent=2)
+        print(f"Статистику збережено у файл: {path}")
+    except OSError as e:
+        print(f"Помилка збереження у файл '{path}': {e}")
 
 
-def load_stats_from_file() -> None:
-    """Завантажити дані: кількості перемог та програшів з файлу."""
-    pass
+def load_stats_from_file(file_path: str | None = None) -> None:
+    """Завантажити дані: кількості перемог та програшів з файлу (JSON)."""
+    path = file_path or STATS_FILE
+    try:
+        with open(path, "r", encoding="utf-8") as f:
+            data = json.load(f)
+        # Валідація та приведення
+        wins = int(data.get("wins", 0))
+        losses = int(data.get("losses", 0))
+        if wins < 0 or losses < 0:
+            raise ValueError("Числа мають бути невід’ємними.")
+        _stats["wins"] = wins
+        _stats["losses"] = losses
+        print(f"Статистику завантажено з файлу: {path}")
+    except FileNotFoundError:
+        print(f"Файл '{path}' не знайдено. Використовую початкові значення.")
+    except (OSError, ValueError, json.JSONDecodeError) as e:
+        print(f"Помилка завантаження з файлу '{path}': {e}")
 
 
 def print_menu() -> None:
