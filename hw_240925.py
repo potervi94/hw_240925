@@ -18,8 +18,8 @@
 # та програшів
 # Реалізуйте все функціями
 
+import random
 from typing import NoReturn
-from random import randint
 
 def generate_secret_number(low: int = 1, high: int = 100) -> int:
     """
@@ -30,9 +30,31 @@ def generate_secret_number(low: int = 1, high: int = 100) -> int:
     return randint(low, high)
 
 
-def start_new_game() -> None:
+def start_new_game(tries: int = 5) -> None:
     """Почати нову гру: користувач вводить числа до правильної відповіді."""
-    pass
+    secret = generate_secret_number(1, 100)
+    attempts_left = tries
+
+    while attempts_left > 0:
+        print(f"Залишилось спроб: {attempts_left}")
+        raw = input("Вгадайте число (1..100): ").strip()
+        if not raw.isdigit():
+            print("Введіть ціле число.")
+            continue
+
+        guess = int(raw)
+        if guess < secret:
+            print("Загадане число більше.")
+        elif guess > secret:
+            print("Загадане число менше.")
+        else:
+            print("Вітаю! Ви вгадали число!")
+            break
+
+        attempts_left -= 1
+    else:
+        # Блок else виконається, якщо цикл не був перерваний break (спроби закінчились)
+        print(f"Спроби вичерпано. Число було: {secret}")
 
 
 def show_results() -> None:
